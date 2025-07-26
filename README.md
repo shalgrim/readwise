@@ -1,17 +1,38 @@
-# Readwise
+# Readwise Chrome Extension
 
-A Python project for working with Readwise data.
+A Chrome extension for enhancing your Readwise experience.
 
 ## Installation
 
-```bash
-git clone https://github.com/shalgrim/readwise.git
-cd readwise
-```
+### For Development
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shalgrim/readwise.git
+   cd readwise
+   ```
+
+2. Load the extension in Chrome:
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" in the top right
+   - Click "Load unpacked" and select this directory
+
+### From Chrome Web Store
+[Coming soon]
+
+## Features
+
+- [Feature descriptions coming soon]
 
 ## Usage
 
-[Add usage instructions here]
+[Usage instructions will be added as features are developed]
+
+## Development
+
+To modify this extension:
+1. Make your changes to the source files
+2. Go to `chrome://extensions/` and click the refresh icon for this extension
+3. Test your changes
 
 ## Contributing
 
