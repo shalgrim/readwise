@@ -9,7 +9,8 @@
   ],
   "host_permissions": [
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "https://readwise.io/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -20,9 +21,5 @@
       "js": ["content.js"]
     }
   ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  "options_page": "options.html"
 }

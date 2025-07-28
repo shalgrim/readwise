@@ -17,21 +17,72 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('readwiseForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const formData = {
+    const sendBtn = document.getElementById('sendBtn');
+    const originalText = sendBtn.textContent;
+    
+    // Disable button and show loading state
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+    
+    // Get form data
+    const highlight = {
       text: document.getElementById('selectedText').value,
       title: document.getElementById('title').value,
       author: document.getElementById('author').value,
       source_url: document.getElementById('sourceUrl').value,
-      note: document.getElementById('note').value,
-      tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+      note: document.getElementById('note').value || undefined,
+      category: 'articles'
     };
     
-    // TODO: Send to Readwise API
-    console.log('Sending to Readwise:', formData);
+    // Add tags if provided
+    const tagsInput = document.getElementById('tags').value;
+    if (tagsInput.trim()) {
+      highlight.tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+    }
     
-    // For now, just close the popup
-    window.close();
+    // Get API key and send to Readwise
+    chrome.storage.sync.get(['readwiseApiKey'], function(result) {
+      if (!result.readwiseApiKey) {
+        alert('Please set your Readwise API token in the extension options first.');
+        sendBtn.disabled = false;
+        sendBtn.textContent = originalText;
+        return;
+      }
+      
+      sendToReadwise(highlight, result.readwiseApiKey, sendBtn, originalText);
+    });
   });
+  
+  function sendToReadwise(highlight, apiKey, sendBtn, originalText) {
+    const payload = {
+      highlights: [highlight]
+    };
+    
+    fetch('https://readwise.io/api/v2/highlights/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token ' + apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to save to Readwise: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Successfully sent to Readwise:', data);
+      window.close();
+    })
+    .catch(error => {
+      console.error('Error sending to Readwise:', error);
+      alert('Error sending to Readwise: ' + error.message);
+      sendBtn.disabled = false;
+      sendBtn.textContent = originalText;
+    });
+  }
   
   // Handle cancel button
   document.getElementById('cancelBtn').addEventListener('click', function() {
