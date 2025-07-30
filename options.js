@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const saveBtn = document.getElementById('saveBtn');
   const status = document.getElementById('status');
   
-  // Load saved API key
+  // Check if API key exists and show status
   chrome.storage.sync.get(['readwiseApiKey'], function(result) {
     if (result.readwiseApiKey) {
-      apiKeyInput.value = result.readwiseApiKey;
+      document.getElementById('apiKeyStatus').style.display = 'block';
     }
   });
   
