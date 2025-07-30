@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           url: 'popup.html',
           type: 'popup',
           width: 400,
-          height: 600
+          height: 650
         });
       }
     });

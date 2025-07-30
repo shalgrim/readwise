@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Readwise Chrome Extension",
+  "name": "My experimental Readwise extension",
   "version": "1.0.0",
   "description": "A Chrome extension for enhancing your Readwise experience",
   "permissions": [

@@ -25,20 +25,33 @@ document.addEventListener('DOMContentLoaded', function() {
     sendBtn.textContent = 'Sending...';
     
     // Get form data
+    const tagsInput = document.getElementById('tags').value;
+    const noteInput = document.getElementById('note').value;
+    
+    // Format tags and note according to Readwise format
+    let finalNote = '';
+    if (tagsInput.trim()) {
+      const formattedTags = tagsInput.split(',')
+        .map(tag => '.' + tag.trim().replace(/\s+/g, '-'))
+        .filter(tag => tag.length > 1)
+        .join(' ');
+      finalNote = formattedTags;
+      
+      if (noteInput.trim()) {
+        finalNote += '\n' + noteInput.trim();
+      }
+    } else if (noteInput.trim()) {
+      finalNote = noteInput.trim();
+    }
+    
     const highlight = {
       text: document.getElementById('selectedText').value,
       title: document.getElementById('title').value,
       author: document.getElementById('author').value,
       source_url: document.getElementById('sourceUrl').value,
-      note: document.getElementById('note').value || undefined,
+      note: finalNote || undefined,
       category: 'articles'
     };
-    
-    // Add tags if provided
-    const tagsInput = document.getElementById('tags').value;
-    if (tagsInput.trim()) {
-      highlight.tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
-    }
     
     // Get API key and send to Readwise
     chrome.storage.sync.get(['readwiseApiKey'], function(result) {
