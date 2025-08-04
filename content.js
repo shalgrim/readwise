@@ -9,7 +9,7 @@ document.addEventListener('mouseup', function() {
 });
 
 // Listen for messages from background script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'getPageInfo') {
     sendResponse({
       selectedText: selectedText,
