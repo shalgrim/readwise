@@ -62,11 +62,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      sendToReadwise(highlight, result.readwiseApiKey, sendBtn, originalText);
+      const hasTags = tagsInput.trim().length > 0;
+      sendToReadwise(highlight, noteInput.trim(), hasTags, result.readwiseApiKey, sendBtn, originalText);
     });
   });
   
-  function sendToReadwise(highlight, apiKey, sendBtn, originalText) {
+  function sendToReadwise(highlight, cleanNote, hasTags, apiKey, sendBtn, originalText) {
     const payload = {
       highlights: [highlight]
     };
@@ -86,6 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
       return response.json();
     })
     .then(data => {
+      // If we have tags and a clean note, update the highlight to remove tags from note display
+      if (hasTags && cleanNote) {
+        const highlightId = data.results[0].id;
+        return updateHighlightNote(highlightId, cleanNote, apiKey);
+      }
+      return data;
+    })
+    .then(data => {
       console.log('Successfully sent to Readwise:', data);
       window.close();
     })
@@ -94,6 +103,25 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Error sending to Readwise: ' + error.message);
       sendBtn.disabled = false;
       sendBtn.textContent = originalText;
+    });
+  }
+  
+  function updateHighlightNote(highlightId, cleanNote, apiKey) {
+    return fetch(`https://readwise.io/api/v2/highlights/${highlightId}/`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'Token ' + apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        note: cleanNote
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to update note: ' + response.status);
+      }
+      return response.json();
     });
   }
   
