@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
       // If we have tags and a clean note, update the highlight to remove tags from note display
       if (hasTags && cleanNote) {
-        const highlightId = data.results[0].id;
+        const highlightId = data[0].modified_highlights[0];
         return updateHighlightNote(highlightId, cleanNote, apiKey);
       }
       return data;
