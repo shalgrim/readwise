@@ -7,9 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (result.pageData) {
       const data = result.pageData;
       document.getElementById('selectedText').value = data.selectedText || '';
-      document.getElementById('title').value = data.pageTitle || '';
-      document.getElementById('author').value = data.author || '';
       document.getElementById('sourceUrl').value = data.pageUrl || '';
+      
+      // Check if we have saved title/author for this URL
+      const urlKey = `readwise_url_data_${data.pageUrl}`;
+      const savedData = localStorage.getItem(urlKey);
+      
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        document.getElementById('title').value = parsed.title || data.pageTitle || '';
+        document.getElementById('author').value = parsed.author || data.author || '';
+      } else {
+        document.getElementById('title').value = data.pageTitle || '';
+        document.getElementById('author').value = data.author || '';
+      }
     }
   });
   
@@ -95,6 +106,19 @@ document.addEventListener('DOMContentLoaded', function() {
       return data;
     })
     .then(data => {
+      // Save title/author for this URL for future highlights
+      const currentTitle = document.getElementById('title').value;
+      const currentAuthor = document.getElementById('author').value;
+      const currentUrl = document.getElementById('sourceUrl').value;
+      
+      if (currentUrl) {
+        const urlKey = `readwise_url_data_${currentUrl}`;
+        localStorage.setItem(urlKey, JSON.stringify({
+          title: currentTitle,
+          author: currentAuthor
+        }));
+      }
+      
       console.log('Successfully sent to Readwise:', data);
       window.close();
     })
